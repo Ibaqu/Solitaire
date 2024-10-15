@@ -10,4 +10,9 @@ public class Card {
         this.rank = rank;
         this.isFaceUp = false;
     }
+
+    // Flip over card
+    public void flip() {
+        this.isFaceUp = !isFaceUp;
+    }
 }
