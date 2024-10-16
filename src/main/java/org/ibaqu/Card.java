@@ -1,6 +1,9 @@
 package org.ibaqu;
 
+import org.ibaqu.Console;
+
 public class Card {
+
     private final String suit;
     private final String rank;
     private boolean isFaceUp;
@@ -28,4 +31,8 @@ public class Card {
         return rank;
     }
 
+    @Override
+    public String toString() {
+        return (isFaceUp() ? Console.BOLD + "[" + rank + " of " + suit + "]" + Console.RESET : "[ ? ]");
+    }
 }

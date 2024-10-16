@@ -12,8 +12,8 @@ public class Deck {
     public Deck() {
         cards = new ArrayList<>();
 
-        String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
-        String[] ranks = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+        String[] suits = {Console.HEARTS, Console.DIAMONDS, Console.CLUBS, Console.SPADES};
+        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
         // Iterate through each suit up the ranks and define a card to add to the deck
         for (String suit : suits) {
@@ -21,6 +21,8 @@ public class Deck {
                 cards.add(new Card(suit, rank));
             }
         }
+
+        shuffle();
     }
 
     public List<Card> getCards() {
