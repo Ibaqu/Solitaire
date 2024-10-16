@@ -15,4 +15,17 @@ public class Card {
     public void flip() {
         this.isFaceUp = !isFaceUp;
     }
+
+    public Boolean isFaceUp() {
+        return this.isFaceUp;
+    }
+
+    public String getSuit() {
+        return suit;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
 }
