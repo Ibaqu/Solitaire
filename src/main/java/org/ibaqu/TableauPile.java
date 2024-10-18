@@ -8,12 +8,20 @@ public class TableauPile {
     private LinkedList<Card> faceDownCards = new LinkedList<>();
     private LinkedList<Card> faceUpCards = new LinkedList<>();
 
-    public void addFaceUpCard(Card card) {
+    public TableauPile addFaceUpCard(Card card) {
+        if (!card.isFaceUp()) {
+            card.flip();
+        }
         faceUpCards.add(card);
+        return this;
     }
 
-    public void addFaceDownCard(Card card) {
+    public TableauPile addFaceDownCard(Card card) {
+        if (card.isFaceUp()) {
+            card.flip();
+        }
         faceDownCards.add(card);
+        return this;
     }
 
     public List<Card> getFaceUpCards() {

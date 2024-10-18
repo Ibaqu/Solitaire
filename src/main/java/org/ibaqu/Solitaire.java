@@ -98,8 +98,6 @@ public class Solitaire {
             // Remove top of stock card and add to waste
             waste.add(stock.remove(stock.size() - 1).flip());
         } else if(instruction.matches(regex_WasteToTableau)) {
-            Console.printAction("- Moving from Waste to Tableau");
-
             /*  - Waste to Tableau :: Command : WT1 ... WT7
                 If Waste is not empty :
                     Top card is moved to any tableau pile within rules
@@ -108,6 +106,21 @@ public class Solitaire {
                     Check 'Stock to Waste'
             */
 
+            // Calculate the index based on the instruction provided
+            int tableauIndex = (Character.getNumericValue(instruction.charAt(2))) - 1;
+
+            // If waste is not empty
+            if (!waste.isEmpty()) {
+                Console.printAction("- Moving from Waste to Tableau");
+                // Get the tableau pile at the index
+                TableauPile tableauPile = tableau.get(tableauIndex);
+                // Add the waste card
+                tableauPile = tableauPile.addFaceUpCard(waste.remove(waste.size() - 1));
+                // Set the tableau
+                tableau.set(tableauIndex, tableauPile);
+            } else {
+                Console.printError("- Waste pile is EMPTY");
+            }
         } else if (instruction.matches(regex_TableauToTableau)) {
             Console.printAction("- Moving from Tableau [n] to Tableau [n]");
 
@@ -123,7 +136,6 @@ public class Solitaire {
                 If tableau is empty :
                     Rules are disregarded
             */
-
         } else if (instruction.matches(regex_FoundationToTableau)) {
             Console.printAction("- Moving from Foundation to Tableau");
             /*  - Foundation to Tableau
