@@ -1,12 +1,11 @@
 package org.ibaqu;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class Solitaire {
 
     private Deck deck;
-    private List<List<Card>> tableau;
+    private List<TableauPile> tableau;
     private List<Stack<Card>> foundation;
     private List<Card> stock;
     private List<Card> waste;
@@ -32,24 +31,19 @@ public class Solitaire {
     private void setupTableau() {
         // Iterate through seven tableau
         for (int i = 0; i < 7; i++) {
+            TableauPile tableauPile = new TableauPile();
 
-            List<Card> pile = new ArrayList<>();
-            // Add j number of cards for the i'th tableau
+            // For each tableau created at the index
+            // Add a card to the faceDownCards
             for (int j = 0; j <= i; j++) {
-                // Draw card
-                Card tableauCard = deck.drawCard();
-
-                // If card is intended to be the top of the tableau, flip it
-                if (j == i) {
-                    tableauCard.flip();
-                }
-
-                // Add the card to the pile
-                pile.add(tableauCard);
+                tableauPile.addFaceDownCard(deck.drawCard());
             }
 
-            // Add setup pile to the tableau
-            tableau.add(pile);
+            // Flip the top card of the tableau pile
+            tableauPile.flipTopCard();
+
+            // Add the completed tableau pile to the tableau
+            tableau.add(tableauPile);
         }
     }
 
@@ -86,7 +80,7 @@ public class Solitaire {
 
         if (instruction.matches(regex_StockToWaste)) {
             Console.printAction("- Drawing from Stock");
-            /*   - Stock to Waste
+            /*   - Stock to Waste :: Command : D
                 If Stock is empty :
                     Shuffle contents of Waste into Stack
                 Top card is moved from Stock to Waste (after flipping)
@@ -103,12 +97,10 @@ public class Solitaire {
 
             // Remove top of stock card and add to waste
             waste.add(stock.remove(stock.size() - 1).flip());
-        }
-
-        if(instruction.matches(regex_WasteToTableau)) {
+        } else if(instruction.matches(regex_WasteToTableau)) {
             Console.printAction("- Moving from Waste to Tableau");
 
-            /*  - Waste to Tableau
+            /*  - Waste to Tableau :: Command : WT1 ... WT7
                 If Waste is not empty :
                     Top card is moved to any tableau pile within rules
 

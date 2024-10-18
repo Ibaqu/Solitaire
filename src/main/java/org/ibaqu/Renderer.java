@@ -38,11 +38,18 @@ public class Renderer {
     }
 
     // Displays live status of Tableau Piles
-    public void renderTableau(List<List<Card>> tableau) {
+    public void renderTableau(List<TableauPile> tableau) {
+
         for (int i = 0; i < tableau.size(); i++) {
-            List<Card> pile = tableau.get(i);
-            System.out.print("Pile " +  (i + 1) + ": ");
-            for (Card card : pile) {
+            // Get the tableau pile at the index
+            TableauPile tableauPile = tableau.get(i);
+            System.out.print("T" + (i + 1) + " : ");
+            // Display the faceDownCards
+            for (Card card : tableauPile.getFaceDownCards()) {
+                System.out.print(card + " ");
+            }
+            // Display the faceUpCards
+            for (Card card : tableauPile.getFaceUpCards()) {
                 System.out.print(card + " ");
             }
             System.out.println();
