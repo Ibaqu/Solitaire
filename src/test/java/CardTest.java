@@ -1,14 +1,15 @@
 import org.ibaqu.Card;
+import org.ibaqu.Rank;
+import org.ibaqu.Suit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
 
 public class CardTest {
 
     @Test
     void testFlip() {
         // Create new card
-        Card card = new Card(Card.suits[0], Card.ranks[0]);
+        Card card = new Card(Suit.DIAMONDS.getValue(), Rank.ACE.getValue());
 
         // Check if card is face down (!faceup)
         Assertions.assertFalse(card.isFaceUp());
