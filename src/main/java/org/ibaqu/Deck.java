@@ -13,9 +13,9 @@ public class Deck {
         cards = new ArrayList<>();
 
         // Iterate through each suit up the ranks and define a card to add to the deck
-        for (String suit : Card.suits) {
-            for (String rank : Card.ranks) {
-                cards.add(new Card(suit, rank));
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                cards.add(new Card(suit.getValue(), rank.getValue()));
             }
         }
 
