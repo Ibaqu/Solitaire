@@ -18,7 +18,7 @@ public class Console {
     public static final String SPADES = WHITE_BACKGROUND + BLACK + "♠" + RESET;
 
     public static void printError(String msg) {
-        System.out.println(RED + msg + RESET);
+        System.out.println(RED + "ERROR : " + msg + RESET);
     }
 
     public static void printAction(String msg) {

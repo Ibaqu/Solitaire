@@ -119,23 +119,45 @@ public class Solitaire {
                 // Set the tableau
                 tableau.set(tableauIndex, tableauPile);
             } else {
-                Console.printError("- Waste pile is EMPTY");
+                Console.printError("Waste pile is EMPTY");
             }
         } else if (instruction.matches(regex_TableauToTableau)) {
             Console.printAction("- Moving from Tableau [n] to Tableau [n]");
-
-            /*  - Tableau to Tableau
-                If single card :
-                    Card is moved to any tableau pile within rules
-
-                If stack of cards :
-                    Stack is moved to any tableau pile within rules
-
-                Flip leftover card in tableau if face down
+            /*  - Tableau to Tableau :: Command T1T2
+                Try to move the entire faceUpCards linked list to the destination within the rules
+                The logic is that all the faceUpCards would have formed only if the rules are followed
 
                 If tableau is empty :
                     Rules are disregarded
             */
+
+            // Calculate the source tableau index and destination tableau index
+            int sourceIndex = (Character.getNumericValue(instruction.charAt(1))) - 1;
+            int destinationIndex = (Character.getNumericValue(instruction.charAt(3))) - 1;
+
+            // If the indexes are same, print an error
+            if (sourceIndex == destinationIndex) {
+                Console.printError("Source Tableau and Destination Tableau are the same");
+            } else {
+                // Move all faceup cards from the source to the destination
+                Console.printAction("- Moving from Tableau " + (sourceIndex + 1)
+                        + "to Tableau " + (destinationIndex + 1));
+
+                // Get the tableau pile at source index and destination index
+                TableauPile sourcePile = tableau.get(sourceIndex);
+                TableauPile destinationPile = tableau.get(destinationIndex);
+
+                // Go through all faceup cards at the source pile
+                for (Card sourceCards : sourcePile.getFaceUpCards()) {
+                    // Add cards to the destination pile one by one
+                    // TODO : Q. Is there a better way to do this?
+                    destinationPile.addFaceUpCard(sourceCards);
+                }
+
+                // Remove all faceup cards from the source pile
+                sourcePile.removeAllFaceUpCards();
+            }
+
         } else if (instruction.matches(regex_FoundationToTableau)) {
             Console.printAction("- Moving from Foundation to Tableau");
             /*  - Foundation to Tableau
