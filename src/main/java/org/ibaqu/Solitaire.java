@@ -66,14 +66,12 @@ public class Solitaire {
         3. Tableau to Tableau
         4. Waste to Foundation
         5. Tableau to Foundation
-        6. Foundation to Tableau
      */
     public void moveCard(String instruction){
         String regex_StockToWaste = "([dD])";
 
         String regex_WasteToTableau = "([wW][tT][1-7])";
         String regex_TableauToTableau = "([tT][1-7][tT][1-7])";
-        String regex_FoundationToTableau = "([hdscHDSC][tT][1-7])";
 
         String regex_WasteToFoundation = "([wW][hdscHDSC])";
         String regex_TableauToFoundation = "([tT][1-7][hdscHDSC])";
@@ -157,12 +155,6 @@ public class Solitaire {
                 // Remove all faceup cards from the source pile
                 sourcePile.removeAllFaceUpCards();
             }
-
-        } else if (instruction.matches(regex_FoundationToTableau)) {
-            Console.printAction("- Moving from Foundation to Tableau");
-            /*  - Foundation to Tableau
-                Single card may be moved to tableau within rules
-            */
         } else if (instruction.matches(regex_WasteToFoundation)) {
             Console.printAction("- Moving from Waste to Foundation");
             /*  - Waste to Foundation
@@ -173,7 +165,6 @@ public class Solitaire {
 
                 If moving a card results in tableau becoming empty, the next card in pile should be flipped
             */
-
         } else if (instruction.matches(regex_TableauToFoundation)) {
             Console.printAction("- Moving from Tableau to Foundation");
             /*  - Tableau to Foundation
@@ -182,7 +173,6 @@ public class Solitaire {
                 else
                     Single card can be moved to Foundation within rules
             */
-
         }
     }
 
@@ -192,7 +182,6 @@ public class Solitaire {
                 "([dD])|" +                 // Stock to Waste
                 "([wW][tT][1-7])|" +        // Waste to Tableau
                 "([tT][1-7][tT][1-7])|" +   // Tableau to Tableau
-                "([hdscHDSC][tT][1-7])|" +  // Foundation to Tableau
                 "([wW][hdscHDSC])|" +       // Waste to Foundation
                 "([tT][1-7][hdscHDSC])";    // Tableau to Foundation
 
