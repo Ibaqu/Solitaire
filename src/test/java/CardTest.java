@@ -9,7 +9,7 @@ public class CardTest {
     @Test
     void testFlip() {
         // Create new card
-        Card card = new Card(Suit.DIAMONDS.getValue(), Rank.ACE.getValue());
+        Card card = new Card(Suit.DIAMONDS, Rank.ACE);
 
         // Check if card is face down (!faceup)
         Assertions.assertFalse(card.isFaceUp());

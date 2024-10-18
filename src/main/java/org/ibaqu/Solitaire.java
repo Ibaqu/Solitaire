@@ -110,12 +110,25 @@ public class Solitaire {
             // If waste is not empty
             if (!waste.isEmpty()) {
                 Console.printAction("- Moving from Waste to Tableau");
+
                 // Get the tableau pile at the index
                 TableauPile tableauPile = tableau.get(tableauIndex);
-                // Add the waste card
-                tableauPile = tableauPile.addFaceUpCard(waste.remove(waste.size() - 1));
-                // Set the tableau
-                tableau.set(tableauIndex, tableauPile);
+
+                // Get the tableau card
+                Card tableauCard = tableauPile.getLastFaceUpCard();
+
+                // Get the card in the waste pile
+                Card wasteCard = waste.get(waste.size() - 1);
+
+                // Check if wasteCard can be placed on tableau
+                if (isValidTableauMove(wasteCard, tableauCard)) {
+                    // Add the waste card
+                    tableauPile = tableauPile.addFaceUpCard(waste.remove(waste.size() - 1));
+                    // Set the tableau
+                    tableau.set(tableauIndex, tableauPile);
+                } else {
+                    Console.printError("Cannot move card " + wasteCard + " to tableau T" + (tableauIndex + 1));
+                }
             } else {
                 Console.printError("Waste pile is EMPTY");
             }
@@ -177,7 +190,6 @@ public class Solitaire {
     }
 
     private boolean isValidMoveRegex(String input) {
-        // TODO - Not so important, but check for t1t1 moves. i.e Moving to same tableau.
         String validMoveRegex =
                 "([dD])|" +                 // Stock to Waste
                 "([wW][tT][1-7])|" +        // Waste to Tableau
@@ -186,6 +198,21 @@ public class Solitaire {
                 "([tT][1-7][hdscHDSC])";    // Tableau to Foundation
 
         return input.matches(validMoveRegex);
+    }
+
+    private boolean isValidTableauMove(Card source, Card target) {
+        // Is the color same?
+        boolean isColorSame = source.getSuit().getColor().equals(target.getSuit().getColor());
+
+        // Is source rank equal to (target rank - 1)
+        boolean isRanked = (source.getRank().getValue() == target.getRank().getPreviousRank());
+
+        // If Color is the same, or the rank isn't right
+        if (isColorSame || !isRanked) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void start() {

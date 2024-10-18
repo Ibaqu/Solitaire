@@ -4,11 +4,11 @@ import org.ibaqu.Console;
 
 public class Card {
 
-    private final String suit;
-    private final String rank;
+    private final Suit suit;
+    private final Rank rank;
     private boolean isFaceUp;
 
-    public Card(String suit, String rank) {
+    public Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
         this.isFaceUp = false;
@@ -24,16 +24,19 @@ public class Card {
         return this.isFaceUp;
     }
 
-    public String getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 
-    public String getRank() {
+    public Rank getRank() {
         return rank;
     }
 
     @Override
     public String toString() {
-        return (isFaceUp() ? Console.BOLD + "[" + rank + " of " + suit + "]" + Console.RESET : "[ ? ]");
+        // TODO : Change rendering for Jack, Queen and King
+        String rankValue = (rank.getValue() == 1 ? "A" : String.valueOf(rank.getValue()));
+        return (isFaceUp() ? Console.BOLD + "[" + rankValue + " of " + suit.getValue() + "]" + Console.RESET :
+                "[ ? ]");
     }
 }
