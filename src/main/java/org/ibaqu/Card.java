@@ -15,8 +15,9 @@ public class Card {
     }
 
     // Flip over card
-    public void flip() {
+    public Card flip() {
         this.isFaceUp = !isFaceUp;
+        return this;
     }
 
     public Boolean isFaceUp() {

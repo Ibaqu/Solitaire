@@ -89,9 +89,20 @@ public class Solitaire {
             /*   - Stock to Waste
                 If Stock is empty :
                     Shuffle contents of Waste into Stack
-                Top card is moved from Stock to Waste
+                Top card is moved from Stock to Waste (after flipping)
             */
 
+            if (stock.isEmpty()) {
+                // Shuffle waste cards
+                Collections.shuffle(waste);
+                // Add all waste cards to Stock
+                stock.addAll(waste);
+                // Remove all waste cards
+                waste.clear();
+            }
+
+            // Remove top of stock card and add to waste
+            waste.add(stock.remove(stock.size() - 1).flip());
         }
 
         if(instruction.matches(regex_WasteToTableau)) {
@@ -177,7 +188,11 @@ public class Solitaire {
         renderer.renderTableau(tableau);
 
         System.out.println("    -----     Options     ----- ");
-        System.out.println("[D] - Draw from Stock to Waste");
+        if (!stock.isEmpty()) {
+            System.out.println("[D] - Draw from Stock");
+        } else {
+            System.out.println("[D] - Reshuffle Waste into Stock and Draw again");
+        }
         System.out.print("[W][T(i)] - Waste to Tableau (index)");
         System.out.print("\t[T(i)][T(i)] - Tableau (index) to Tableau (index)");
         System.out.print("\t[W][F] - Waste to Foundation");

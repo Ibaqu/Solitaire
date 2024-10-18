@@ -7,17 +7,17 @@ public class Renderer {
 
     public void renderStock(List<Card> stock) {
         if(!stock.isEmpty()) {
-            System.out.println("Stock (S): Contains Cards");
+            System.out.println("Stock (S) : [" + stock.size() + "] cards");
         } else {
-            System.out.println("Stock (S): Empty");
+            System.out.println("Stock (S) : Empty");
         }
     }
 
     public void renderWaste(List<Card> waste) {
         if(!waste.isEmpty()) {
-            System.out.println("Waste (W): " + waste.get(waste.size() - 1));
+            System.out.println("Waste (W) : [" + waste.size() + "] : " + waste.get(waste.size() - 1));
         } else {
-            System.out.println("Waste (W): Empty");
+            System.out.println("Waste (W) : Empty");
         }
     }
 
