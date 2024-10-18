@@ -8,6 +8,10 @@ public class Card {
     private final String rank;
     private boolean isFaceUp;
 
+    public static final String[] suits = {Console.HEARTS, Console.DIAMONDS, Console.CLUBS, Console.SPADES};
+    public static final String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+
+
     public Card(String suit, String rank) {
         this.suit = suit;
         this.rank = rank;

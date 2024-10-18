@@ -12,12 +12,9 @@ public class Deck {
     public Deck() {
         cards = new ArrayList<>();
 
-        String[] suits = {Console.HEARTS, Console.DIAMONDS, Console.CLUBS, Console.SPADES};
-        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
-
         // Iterate through each suit up the ranks and define a card to add to the deck
-        for (String suit : suits) {
-            for (String rank : ranks) {
+        for (String suit : Card.suits) {
+            for (String rank : Card.ranks) {
                 cards.add(new Card(suit, rank));
             }
         }
