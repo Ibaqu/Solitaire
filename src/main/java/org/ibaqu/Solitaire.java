@@ -49,7 +49,6 @@ public class Solitaire {
 
     private void setupFoundation() {
         // Create an empty stack of cards to represent a full suit
-        // TODO : Is it necessary to have a 'isSuit' function?
         for (int i = 0; i < 4; i++) {
             Stack<Card> suit = new Stack<>();
             foundation.add(suit);
@@ -161,7 +160,6 @@ public class Solitaire {
                 // Go through all faceup cards at the source pile
                 for (Card sourceCards : sourcePile.getFaceUpCards()) {
                     // Add cards to the destination pile one by one
-                    // TODO : Q. Is there a better way to do this?
                     destinationPile.addFaceUpCard(sourceCards);
                 }
 
