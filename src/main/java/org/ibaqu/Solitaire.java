@@ -244,6 +244,67 @@ public class Solitaire {
                 else
                     Single card can be moved to Foundation within rules
             */
+
+            // Get Source tableau and Destination foundation
+            // t1h, t2S
+            // Get Tableau top card
+            int sourceTableauIndex = Integer.valueOf(instruction.charAt(1));
+
+            String foundationInstruction = String.valueOf(instruction.charAt(2)).toLowerCase();
+
+            // h d c s
+            Suit foundationSuit = null;
+
+            switch (foundationInstruction) {
+                case "h" : {
+                    foundationSuit = Suit.HEARTS;
+                    break;
+                }
+
+                case "d" : {
+                    foundationSuit = Suit.DIAMONDS;
+                    break;
+                }
+
+                case "c" : {
+                    foundationSuit = Suit.CLUBS;
+                    break;
+                }
+
+                case "s" : {
+                    foundationSuit = Suit.SPADES;
+                    break;
+                }
+            }
+
+            Card tableauCard = tableau.get(sourceTableauIndex).getFirstFaceUpCard();
+
+            // Check suit
+            if (tableauCard.getSuit().equals(foundationSuit)) {
+                Card topCard = foundation.getTopCard(foundationSuit);
+
+                // If foundation is empty only ACE cards can be placed
+                if (topCard == null) {
+
+                    // Only add if tableau card is an ACE
+                    if (tableauCard.getRank().equals(Rank.ACE)) {
+                        // Add the ace card to foundation
+                        foundation.addCard(foundationSuit, tableauCard);
+                        // Remove the all faceUpCards in tableau
+                        tableau.get(sourceTableauIndex).removeAllFaceUpCards();
+                    } else {
+                        Console.printError("Card is not an ACE card. Cannot add to foundation");
+                    }
+                } else {
+                   if (tableauCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
+
+                   } else {
+                       Console.printError("Card is not the right rank");
+                   }
+                }
+            } else {
+                Console.printError("Card is not the correct foundation suit");
+            }
         }
     }
 
