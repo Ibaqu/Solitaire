@@ -24,6 +24,10 @@ public class TableauPile {
         return this;
     }
 
+    public Card getFirstFaceUpCard() {
+        return faceUpCards.getFirst();
+    }
+
     public Card getLastFaceUpCard() {
         return faceUpCards.getLast();
     }

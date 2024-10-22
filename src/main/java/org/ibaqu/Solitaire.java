@@ -104,14 +104,14 @@ public class Solitaire {
             */
 
             // Calculate the index based on the instruction provided
-            int tableauIndex = (Character.getNumericValue(instruction.charAt(2))) - 1;
+            int destinationIndex = (Character.getNumericValue(instruction.charAt(2))) - 1;
 
             // If waste is not empty
             if (!waste.isEmpty()) {
                 Console.printAction("- Moving from Waste to Tableau");
 
                 // Get the tableau pile at the index
-                TableauPile tableauPile = tableau.get(tableauIndex);
+                TableauPile tableauPile = tableau.get(destinationIndex);
 
                 // Get the tableau card
                 Card tableauCard = tableauPile.getLastFaceUpCard();
@@ -124,15 +124,14 @@ public class Solitaire {
                     // Add the waste card
                     tableauPile = tableauPile.addFaceUpCard(waste.remove(waste.size() - 1));
                     // Set the tableau
-                    tableau.set(tableauIndex, tableauPile);
+                    tableau.set(destinationIndex, tableauPile);
                 } else {
-                    Console.printError("Cannot move card " + wasteCard + " to tableau T" + (tableauIndex + 1));
+                    Console.printError("Cannot move card " + wasteCard + " to tableau T" + (destinationIndex + 1));
                 }
             } else {
                 Console.printError("Waste pile is EMPTY");
             }
         } else if (instruction.matches(regex_TableauToTableau)) {
-            Console.printAction("- Moving from Tableau [n] to Tableau [n]");
             /*  - Tableau to Tableau :: Command T1T2
                 Try to move the entire faceUpCards linked list to the destination within the rules
                 The logic is that all the faceUpCards would have formed only if the rules are followed
@@ -149,22 +148,32 @@ public class Solitaire {
             if (sourceIndex == destinationIndex) {
                 Console.printError("Source Tableau and Destination Tableau are the same");
             } else {
-                // Move all faceup cards from the source to the destination
-                Console.printAction("- Moving from Tableau " + (sourceIndex + 1)
-                        + "to Tableau " + (destinationIndex + 1));
-
                 // Get the tableau pile at source index and destination index
                 TableauPile sourcePile = tableau.get(sourceIndex);
                 TableauPile destinationPile = tableau.get(destinationIndex);
 
-                // Go through all faceup cards at the source pile
-                for (Card sourceCards : sourcePile.getFaceUpCards()) {
-                    // Add cards to the destination pile one by one
-                    destinationPile.addFaceUpCard(sourceCards);
-                }
+                // Get first upturned card in source pile
+                Card sourceCard = sourcePile.getFirstFaceUpCard();
+                // Get last upturned card in destination pile
+                Card destinationCard = destinationPile.getLastFaceUpCard();
 
-                // Remove all faceup cards from the source pile
-                sourcePile.removeAllFaceUpCards();
+                // Check if source tableau cards can be placed at the destination
+                if (isValidTableauMove(sourceCard, destinationCard)) {
+                    // Move all faceup cards from the source to the destination
+                    Console.printAction("- Moving from Tableau " + (sourceIndex + 1)
+                            + "to Tableau " + (destinationIndex + 1));
+
+                    // Go through all faceup cards at the source pile
+                    for (Card sourceCards : sourcePile.getFaceUpCards()) {
+                        // Add cards to the destination pile one by one
+                        destinationPile.addFaceUpCard(sourceCards);
+                    }
+
+                    // Remove all faceup cards from the source pile
+                    sourcePile.removeAllFaceUpCards();
+                } else {
+                    Console.printError("Cannot move card " + sourceCard + " to tableau T" + (destinationIndex + 1));
+                }
             }
         } else if (instruction.matches(regex_WasteToFoundation)) {
             Console.printAction("- Moving from Waste to Foundation");
@@ -205,12 +214,8 @@ public class Solitaire {
         // Is source rank equal to (target rank - 1)
         boolean isRanked = (source.getRank().getValue() == target.getRank().getPreviousRank());
 
-        // If Color is the same, or the rank isn't right
-        if (isColorSame || !isRanked) {
-            return false;
-        } else {
-            return true;
-        }
+        // If Color is not the same, and the rank is right
+        return !isColorSame && isRanked;
     }
 
     private void start() {
