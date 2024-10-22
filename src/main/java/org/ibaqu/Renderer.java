@@ -22,18 +22,11 @@ public class Renderer {
     }
 
     // Displays live status of Foundation Piles
-    public void renderFoundationPile(List<Stack<Card>> foundation) {
-        int suitIndex = 0;
+    public void renderFoundationPile(FoundationPile foundation) {
 
-        for (String suit : new String[]{Console.HEARTS, Console.DIAMONDS, Console.CLUBS, Console.SPADES}) {
-            System.out.print(suit + ": ");
-
-            for(Card foundationCard : foundation.get(suitIndex)) {
-                System.out.print(foundationCard + " ");
-            }
-
-            suitIndex++;
-            System.out.println();
+        for (Suit suit : Suit.values()) {
+            Card topCard = foundation.getTopCard(suit);
+            System.out.println(suit + ": " + ((topCard != null) ? topCard : "Empty"));
         }
     }
 
