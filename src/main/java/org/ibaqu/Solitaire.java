@@ -6,14 +6,14 @@ public class Solitaire {
 
     private Deck deck;
     private List<TableauPile> tableau;
-    private List<Stack<Card>> foundation;
+    private FoundationPile foundation;
     private List<Card> stock;
     private List<Card> waste;
 
     public Solitaire() {
         deck = new Deck();
         tableau = new ArrayList<>();
-        foundation = new ArrayList<>();
+        foundation = new FoundationPile();
         stock = new ArrayList<>();
         waste = new ArrayList<>();
 
@@ -24,7 +24,6 @@ public class Solitaire {
     // Set up the game
     private void setupGame() {
         setupTableau();
-        setupFoundation();
         setupStock();
     }
 
@@ -44,14 +43,6 @@ public class Solitaire {
 
             // Add the completed tableau pile to the tableau
             tableau.add(tableauPile);
-        }
-    }
-
-    private void setupFoundation() {
-        // Create an empty stack of cards to represent a full suit
-        for (int i = 0; i < 4; i++) {
-            Stack<Card> suit = new Stack<>();
-            foundation.add(suit);
         }
     }
 
@@ -176,7 +167,6 @@ public class Solitaire {
                 }
             }
         } else if (instruction.matches(regex_WasteToFoundation)) {
-            Console.printAction("- Moving from Waste to Foundation");
             /*  - Waste to Foundation
                 If foundation is empty
                     Ace can be placed
@@ -185,6 +175,67 @@ public class Solitaire {
 
                 If moving a card results in tableau becoming empty, the next card in pile should be flipped
             */
+
+            if (!waste.isEmpty()) {
+                // Get WasteCard
+                Card wasteCard = waste.get(waste.size() - 1);
+
+                // Get Destination Foundation Pile
+                String foundationInstruction = String.valueOf(instruction.charAt(1)).toLowerCase();
+
+                // h d c s
+                Suit foundationSuit = null;
+
+                switch (foundationInstruction) {
+                    case "h" : {
+                        foundationSuit = Suit.HEARTS;
+                        break;
+                    }
+
+                    case "d" : {
+                        foundationSuit = Suit.DIAMONDS;
+                        break;
+                    }
+
+                    case "c" : {
+                        foundationSuit = Suit.CLUBS;
+                        break;
+                    }
+
+                    case "s" : {
+                        foundationSuit = Suit.SPADES;
+                        break;
+                    }
+                }
+
+                // If the waste card is the same suit, then continue
+                if (wasteCard.getSuit().equals(foundationSuit)) {
+                    Card topCard = foundation.getTopCard(foundationSuit);
+
+                    // If Foundation is empty
+                    if (topCard == null) {
+                        // Only add if waste card is an ACE
+                        if (wasteCard.getRank().equals(Rank.ACE)) {
+                            // Add the ace card to foundation
+                            foundation.addCard(foundationSuit, wasteCard);
+                            // Remove wasteCard
+                            waste.remove(waste.size() - 1);
+                        } else {
+                            Console.printError("Card is not an ACE card. Cannot add to foundation");
+                        }
+                    } else {
+                        if (wasteCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
+                            foundation.addCard(foundationSuit, wasteCard);
+                        } else {
+                            Console.printError("Card is not the right rank");
+                        }
+                    }
+                } else {
+                    Console.printError("Not the correct foundation suit");
+                }
+            } else {
+                Console.printError("Waste is empty");
+            }
         } else if (instruction.matches(regex_TableauToFoundation)) {
             Console.printAction("- Moving from Tableau to Foundation");
             /*  - Tableau to Foundation
