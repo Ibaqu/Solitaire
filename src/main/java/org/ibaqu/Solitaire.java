@@ -77,8 +77,13 @@ public class Solitaire {
             if (stock.isEmpty()) {
                 // Shuffle waste cards
                 Collections.shuffle(waste);
+
                 // Add all waste cards to Stock
-                stock.addAll(waste);
+                // TODO : Improve the functionality of flipping all cards before adding them to stock
+                for (Card card : waste) {
+                    stock.add(card.flip());
+                }
+
                 // Remove all waste cards
                 waste.clear();
             }
