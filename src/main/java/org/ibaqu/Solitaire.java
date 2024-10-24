@@ -39,7 +39,7 @@ public class Solitaire {
             }
 
             // Flip the top card of the tableau pile
-            tableauPile.flipTopCard();
+            tableauPile.flipLastCard();
 
             // Add the completed tableau pile to the tableau
             tableau.add(tableauPile);
@@ -230,7 +230,10 @@ public class Solitaire {
                         }
                     } else {
                         if (wasteCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
+                            // Add the card to the foundation
                             foundation.addCard(foundationSuit, wasteCard);
+                            // Remove the waste card
+                            waste.remove(waste.size() - 1);
                         } else {
                             Console.printError("Card is not the right rank");
                         }
@@ -282,7 +285,7 @@ public class Solitaire {
                 }
             }
 
-            Card tableauCard = tableau.get(sourceTableauIndex).getFirstFaceUpCard();
+            Card tableauCard = tableau.get(sourceTableauIndex).getLastFaceUpCard();
 
             // Check suit
             if (tableauCard.getSuit().equals(foundationSuit)) {
@@ -290,19 +293,21 @@ public class Solitaire {
 
                 // If foundation is empty only ACE cards can be placed
                 if (topCard == null) {
-
                     // Only add if tableau card is an ACE
                     if (tableauCard.getRank().equals(Rank.ACE)) {
                         // Add the ace card to foundation
                         foundation.addCard(foundationSuit, tableauCard);
-                        // Remove the all faceUpCards in tableau
-                        tableau.get(sourceTableauIndex).removeAllFaceUpCards();
+                        // Remove the last faceUpCards in tableau
+                        tableau.get(sourceTableauIndex).removeLastFaceUpCard();
                     } else {
                         Console.printError("Card is not an ACE card. Cannot add to foundation");
                     }
                 } else {
                    if (tableauCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
-
+                       // Add the faceup card to foundation
+                       foundation.addCard(foundationSuit, tableauCard);
+                       // Remove the all faceUpCards in tableau
+                       tableau.get(sourceTableauIndex).removeLastFaceUpCard();
                    } else {
                        Console.printError("Card is not the right rank");
                    }

@@ -40,7 +40,7 @@ public class TableauPile {
         return faceDownCards;
     }
 
-    public Card removeTopFaceUpCard() {
+    public Card removeLastFaceUpCard() {
         return faceUpCards.isEmpty() ? null : faceUpCards.removeLast();
     }
 
@@ -48,10 +48,10 @@ public class TableauPile {
     // Flip the top card in the face down pile automatically
     public void removeAllFaceUpCards() {
         faceUpCards.clear();
-        flipTopCard();
+        flipLastCard();
     }
 
-    public void flipTopCard() {
+    public void flipLastCard() {
         // If face down cards are not empty and the faceup card list is empty
         if (!faceDownCards.isEmpty() && faceUpCards.isEmpty()) {
             faceUpCards.add(faceDownCards.removeLast().flip());
