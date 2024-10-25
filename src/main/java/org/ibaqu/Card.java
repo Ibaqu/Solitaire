@@ -1,7 +1,5 @@
 package org.ibaqu;
 
-import org.ibaqu.Console;
-
 public class Card {
 
     private final Suit suit;

@@ -1,9 +1,22 @@
 package org.ibaqu;
 
 import java.util.List;
-import java.util.Stack;
 
-public class Renderer {
+public class GameRenderer {
+
+    public void renderGame(GameState gameState) {
+
+        System.out.println("    -----     Stock and Waste Piles     ----- ");
+        renderStock(gameState.getStock());
+        renderWaste(gameState.getWaste());
+
+        System.out.println("    -----     Foundation Piles     ----- ");
+        renderFoundationPile(gameState.getFoundation());
+
+        System.out.println("    -----     Tableau     ----- ");
+        renderTableau(gameState.getTableau());
+    }
+
 
     public void renderStock(List<Card> stock) {
         if(!stock.isEmpty()) {
