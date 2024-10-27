@@ -1,4 +1,4 @@
-package org.ibaqu;
+package org.ibaqu.model;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.ibaqu;
+package org.ibaqu.model;
 
 public enum Rank {
     ACE(1),

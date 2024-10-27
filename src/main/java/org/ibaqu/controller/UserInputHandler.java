@@ -1,4 +1,4 @@
-package org.ibaqu;
+package org.ibaqu.controller;
 
 import java.util.Scanner;
 

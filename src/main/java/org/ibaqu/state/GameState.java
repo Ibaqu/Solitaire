@@ -1,4 +1,8 @@
-package org.ibaqu;
+package org.ibaqu.state;
+
+import org.ibaqu.model.Card;
+import org.ibaqu.model.Foundation;
+import org.ibaqu.model.TableauPile;
 
 import java.util.List;
 

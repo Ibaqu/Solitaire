@@ -1,4 +1,4 @@
-package org.ibaqu;
+package org.ibaqu.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

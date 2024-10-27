@@ -1,5 +1,9 @@
 package org.ibaqu;
 
+import org.ibaqu.controller.GameLogic;
+import org.ibaqu.controller.UserInputHandler;
+import org.ibaqu.view.GameRenderer;
+
 public class Solitaire {
     private final GameLogic gameLogic;
     private final UserInputHandler userInputHandler;

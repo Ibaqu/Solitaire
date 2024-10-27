@@ -1,6 +1,6 @@
-import org.ibaqu.Card;
-import org.ibaqu.Rank;
-import org.ibaqu.Suit;
+import org.ibaqu.model.Card;
+import org.ibaqu.model.Rank;
+import org.ibaqu.model.Suit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

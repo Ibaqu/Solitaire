@@ -1,4 +1,8 @@
-package org.ibaqu;
+package org.ibaqu.controller;
+
+import org.ibaqu.view.Console;
+import org.ibaqu.state.GameState;
+import org.ibaqu.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package org.ibaqu;
+package org.ibaqu.view;
 
 public class Console {
 

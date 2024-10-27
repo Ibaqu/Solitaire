@@ -1,4 +1,6 @@
-package org.ibaqu;
+package org.ibaqu.model;
+
+import org.ibaqu.view.Console;
 
 public class Card {
 

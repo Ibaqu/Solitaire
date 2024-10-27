@@ -1,4 +1,10 @@
-package org.ibaqu;
+package org.ibaqu.view;
+
+import org.ibaqu.model.Card;
+import org.ibaqu.model.Foundation;
+import org.ibaqu.model.Suit;
+import org.ibaqu.model.TableauPile;
+import org.ibaqu.state.GameState;
 
 import java.util.List;
 

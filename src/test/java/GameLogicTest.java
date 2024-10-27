@@ -1,4 +1,5 @@
-import org.ibaqu.*;
+import org.ibaqu.controller.GameLogic;
+import org.ibaqu.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
