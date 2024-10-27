@@ -32,8 +32,16 @@ public class Card {
 
     @Override
     public String toString() {
-        // TODO : Change rendering for Jack, Queen and King
-        String rankValue = (rank.getValue() == 1 ? "A" : String.valueOf(rank.getValue()));
+        // Convert ranks 1 (Ace), 11 (Jack), 12 (Queen), and 13 (King) to their respective symbols
+        String rankValue;
+        switch (rank.getValue()) {
+            case 1:  rankValue = "A"; break;  // Ace
+            case 11: rankValue = "J"; break;  // Jack
+            case 12: rankValue = "Q"; break;  // Queen
+            case 13: rankValue = "K"; break;  // King
+            default: rankValue = String.valueOf(rank.getValue());  // Numeric cards
+        }
+
         return (isFaceUp() ? Console.BOLD + "[" + rankValue + " of " + suit.getValue() + "]" + Console.RESET :
                 "[ ? ]");
     }
