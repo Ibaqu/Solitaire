@@ -74,6 +74,8 @@ public class GameLogic {
             System.exit(0);
         } else if (isValidMoveRegex(playerInput)) {
             moveCard(playerInput);
+        } else if (isGameWon()) {
+            Console.printAction("Game has been WON!");
         } else {
             Console.printError("Invalid choice");
         }
@@ -257,6 +259,16 @@ public class GameLogic {
 
         // If Color is not the same, and the rank is right
         return !isColorSame && isRanked;
+    }
+
+    public boolean isGameWon() {
+        // Check if all foundation piles are full (each contains 13 cards)
+        for (Suit suit : Suit.values()) {
+            if (!foundation.getTopCard(suit).getRank().equals(Rank.KING)) {
+                return false;
+            }
+        }
+        return true;  // All foundation piles are full, so the game is won
     }
 
 }
