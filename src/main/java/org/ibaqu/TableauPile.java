@@ -25,10 +25,16 @@ public class TableauPile {
     }
 
     public Card getFirstFaceUpCard() {
+        if (faceUpCards.isEmpty()) {
+            return null;
+        }
         return faceUpCards.getFirst();
     }
 
     public Card getLastFaceUpCard() {
+        if (faceUpCards.isEmpty()) {
+            return null;
+        }
         return faceUpCards.getLast();
     }
 

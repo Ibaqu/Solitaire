@@ -6,20 +6,29 @@ import java.util.List;
 
 public class GameLogic {
 
+    // Deck is a List of Cards
+    // Tableau is a list of Tableau piles
+    // Foundation is a Map of <Suit, Card> values
+
     protected Deck deck;
     protected List<TableauPile> tableau;
-    private FoundationPile foundation;
+    private Foundation foundation;
     private List<Card> stock;
     private List<Card> waste;
 
     public GameLogic() {
         deck = new Deck();
         tableau = new ArrayList<>();
-        foundation = new FoundationPile();
+        foundation = new Foundation();
         stock = new ArrayList<>();
         waste = new ArrayList<>();
 
         setupGame();
+    }
+
+    public GameLogic(List<TableauPile> tableau, Foundation foundation) {
+        this.tableau = tableau;
+        this.foundation = foundation;
     }
 
     // Set up the game
@@ -72,7 +81,7 @@ public class GameLogic {
 
     private boolean isValidMoveRegex(String input) {
         String validMoveRegex =
-                "([dD])|" +                 // Stock to Waste
+                        "([dD])|" +                 // Stock to Waste
                         "([wW][tT][1-7])|" +        // Waste to Tableau
                         "([tT][1-7][tT][1-7])|" +   // Tableau to Tableau
                         "([wW][hdscHDSC])|" +       // Waste to Foundation
@@ -88,268 +97,158 @@ public class GameLogic {
         4. Waste to Foundation
         5. Tableau to Foundation
      */
-    public void moveCard(String instruction){
-        String regex_StockToWaste = "([dD])";
+    public void moveCard(String instruction) {
+        if (instruction.matches("([dD])")) {
+            moveStockToWaste();
+        } else if (instruction.matches("([wW][tT][1-7])")) {
+            moveWasteToTableau(instruction);
+        } else if (instruction.matches("([tT][1-7][tT][1-7])")) {
+            moveTableauToTableau(instruction);
+        } else if (instruction.matches("([wW][hdscHDSC])")) {
+            moveWasteToFoundation(instruction);
+        } else if (instruction.matches("([tT][1-7][hdscHDSC])")) {
+            moveTableauToFoundation(instruction);
+        } else {
+            Console.printError("Invalid move instruction: " + instruction);
+        }
+    }
 
-        String regex_WasteToTableau = "([wW][tT][1-7])";
-        String regex_TableauToTableau = "([tT][1-7][tT][1-7])";
+    private void moveStockToWaste() {
+        Console.printAction("- Drawing from Stock");
 
-        String regex_WasteToFoundation = "([wW][hdscHDSC])";
-        String regex_TableauToFoundation = "([tT][1-7][hdscHDSC])";
-
-        if (instruction.matches(regex_StockToWaste)) {
-            Console.printAction("- Drawing from Stock");
-            /*   - Stock to Waste :: Command : D
-                If Stock is empty :
-                    Shuffle contents of Waste into Stack
-                Top card is moved from Stock to Waste (after flipping)
-            */
-
-            if (stock.isEmpty()) {
-                // Shuffle waste cards
-                Collections.shuffle(waste);
-
-                // Add all waste cards to Stock
-                // TODO : Improve the functionality of flipping all cards before adding them to stock
-                for (Card card : waste) {
-                    stock.add(card.flip());
-                }
-
-                // Remove all waste cards
-                waste.clear();
+        if (stock.isEmpty() && waste.isEmpty()) {
+            Console.printError("Both Stock and Waste are empty");
+        } else if (stock.isEmpty()) {
+            // Shuffle and move waste to stock
+            Collections.shuffle(waste);
+            for (Card card : waste) {
+                stock.add(card.flip());
             }
-
-            // Remove top of stock card and add to waste
+            waste.clear();
+        } else {
             waste.add(stock.remove(stock.size() - 1).flip());
-        } else if(instruction.matches(regex_WasteToTableau)) {
-            /*  - Waste to Tableau :: Command : WT1 ... WT7
-                If Waste is not empty :
-                    Top card is moved to any tableau pile within rules
+        }
+    }
 
-                If Waste is empty :
-                    Check 'Stock to Waste'
-            */
+    private void moveWasteToTableau(String instruction) {
+        int destinationIndex = (Character.getNumericValue(instruction.charAt(2))) - 1;
 
-            // Calculate the index based on the instruction provided
-            int destinationIndex = (Character.getNumericValue(instruction.charAt(2))) - 1;
+        if (!waste.isEmpty()) {
+            Console.printAction("- Moving from Waste to Tableau");
+            TableauPile tableauPile = tableau.get(destinationIndex);
+            Card tableauCard = tableauPile.getLastFaceUpCard();
+            Card wasteCard = waste.get(waste.size() - 1);
 
-            // If waste is not empty
-            if (!waste.isEmpty()) {
-                Console.printAction("- Moving from Waste to Tableau");
-
-                // Get the tableau pile at the index
-                TableauPile tableauPile = tableau.get(destinationIndex);
-
-                // Get the tableau card
-                Card tableauCard = tableauPile.getLastFaceUpCard();
-
-                // Get the card in the waste pile
-                Card wasteCard = waste.get(waste.size() - 1);
-
-                // Check if wasteCard can be placed on tableau
-                if (isValidTableauMove(wasteCard, tableauCard)) {
-                    // Add the waste card
-                    tableauPile = tableauPile.addFaceUpCard(waste.remove(waste.size() - 1));
-                    // Set the tableau
-                    tableau.set(destinationIndex, tableauPile);
-                } else {
-                    Console.printError("Cannot move card " + wasteCard + " to tableau T" + (destinationIndex + 1));
-                }
+            if (isValidTableauMove(wasteCard, tableauCard)) {
+                tableauPile.addFaceUpCard(waste.remove(waste.size() - 1));
+                tableau.set(destinationIndex, tableauPile);
             } else {
-                Console.printError("Waste pile is EMPTY");
+                Console.printError("Cannot move card " + wasteCard + " to tableau T" + (destinationIndex + 1));
             }
-        } else if (instruction.matches(regex_TableauToTableau)) {
-            /*  - Tableau to Tableau :: Command T1T2
-                Try to move the entire faceUpCards linked list to the destination within the rules
-                The logic is that all the faceUpCards would have formed only if the rules are followed
+        } else {
+            Console.printError("Waste pile is EMPTY");
+        }
+    }
 
-                If tableau is empty :
-                    Rules are disregarded
-            */
+    private void moveTableauToTableau(String instruction) {
+        int sourceIndex = (Character.getNumericValue(instruction.charAt(1))) - 1;
+        int destinationIndex = (Character.getNumericValue(instruction.charAt(3))) - 1;
 
-            // Calculate the source tableau index and destination tableau index
-            int sourceIndex = (Character.getNumericValue(instruction.charAt(1))) - 1;
-            int destinationIndex = (Character.getNumericValue(instruction.charAt(3))) - 1;
+        if (sourceIndex == destinationIndex) {
+            Console.printError("Source Tableau and Destination Tableau are the same");
+        } else {
+            TableauPile sourcePile = tableau.get(sourceIndex);
+            TableauPile destinationPile = tableau.get(destinationIndex);
+            Card sourceCard = sourcePile.getFirstFaceUpCard();
+            Card destinationCard = destinationPile.getLastFaceUpCard();
 
-            // If the indexes are same, print an error
-            if (sourceIndex == destinationIndex) {
-                Console.printError("Source Tableau and Destination Tableau are the same");
+            if (isValidTableauMove(sourceCard, destinationCard)) {
+                Console.printAction("- Moving from Tableau " + (sourceIndex + 1)
+                        + " to Tableau " + (destinationIndex + 1));
+                for (Card sourceCards : sourcePile.getFaceUpCards()) {
+                    destinationPile.addFaceUpCard(sourceCards);
+                }
+                sourcePile.removeAllFaceUpCards();
             } else {
-                // Get the tableau pile at source index and destination index
-                TableauPile sourcePile = tableau.get(sourceIndex);
-                TableauPile destinationPile = tableau.get(destinationIndex);
-
-                // Get first upturned card in source pile
-                Card sourceCard = sourcePile.getFirstFaceUpCard();
-                // Get last upturned card in destination pile
-                Card destinationCard = destinationPile.getLastFaceUpCard();
-
-                // Check if source tableau cards can be placed at the destination
-                if (isValidTableauMove(sourceCard, destinationCard)) {
-                    // Move all faceup cards from the source to the destination
-                    Console.printAction("- Moving from Tableau " + (sourceIndex + 1)
-                            + "to Tableau " + (destinationIndex + 1));
-
-                    // Go through all faceup cards at the source pile
-                    for (Card sourceCards : sourcePile.getFaceUpCards()) {
-                        // Add cards to the destination pile one by one
-                        destinationPile.addFaceUpCard(sourceCards);
-                    }
-
-                    // Remove all faceup cards from the source pile
-                    sourcePile.removeAllFaceUpCards();
-                } else {
-                    Console.printError("Cannot move card " + sourceCard + " to tableau T" + (destinationIndex + 1));
-                }
-            }
-        } else if (instruction.matches(regex_WasteToFoundation)) {
-            /*  - Waste to Foundation
-                If foundation is empty
-                    Ace can be placed
-                else
-                    Single card can be moved to Foundation within rules
-
-                If moving a card results in tableau becoming empty, the next card in pile should be flipped
-            */
-
-            if (!waste.isEmpty()) {
-                // Get WasteCard
-                Card wasteCard = waste.get(waste.size() - 1);
-
-                // Get Destination Foundation Pile
-                String foundationInstruction = String.valueOf(instruction.charAt(1)).toLowerCase();
-
-                // h d c s
-                Suit foundationSuit = null;
-
-                switch (foundationInstruction) {
-                    case "h" : {
-                        foundationSuit = Suit.HEARTS;
-                        break;
-                    }
-
-                    case "d" : {
-                        foundationSuit = Suit.DIAMONDS;
-                        break;
-                    }
-
-                    case "c" : {
-                        foundationSuit = Suit.CLUBS;
-                        break;
-                    }
-
-                    case "s" : {
-                        foundationSuit = Suit.SPADES;
-                        break;
-                    }
-                }
-
-                // If the waste card is the same suit, then continue
-                if (wasteCard.getSuit().equals(foundationSuit)) {
-                    Card topCard = foundation.getTopCard(foundationSuit);
-
-                    // If Foundation is empty
-                    if (topCard == null) {
-                        // Only add if waste card is an ACE
-                        if (wasteCard.getRank().equals(Rank.ACE)) {
-                            // Add the ace card to foundation
-                            foundation.addCard(foundationSuit, wasteCard);
-                            // Remove wasteCard
-                            waste.remove(waste.size() - 1);
-                        } else {
-                            Console.printError("Card is not an ACE card. Cannot add to foundation");
-                        }
-                    } else {
-                        if (wasteCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
-                            // Add the card to the foundation
-                            foundation.addCard(foundationSuit, wasteCard);
-                            // Remove the waste card
-                            waste.remove(waste.size() - 1);
-                        } else {
-                            Console.printError("Card is not the right rank");
-                        }
-                    }
-                } else {
-                    Console.printError("Not the correct foundation suit");
-                }
-            } else {
-                Console.printError("Waste is empty");
-            }
-        } else if (instruction.matches(regex_TableauToFoundation)) {
-            Console.printAction("- Moving from Tableau to Foundation");
-            /*  - Tableau to Foundation
-                If foundation is empty
-                    Ace can be placed
-                else
-                    Single card can be moved to Foundation within rules
-            */
-
-            // Get Source tableau and Destination foundation
-            // t1h, t2S
-            // Get Tableau top card
-            int sourceTableauIndex = (int) instruction.charAt(1);
-
-            String foundationInstruction = String.valueOf(instruction.charAt(2)).toLowerCase();
-
-            // h d c s
-            Suit foundationSuit = null;
-
-            switch (foundationInstruction) {
-                case "h" : {
-                    foundationSuit = Suit.HEARTS;
-                    break;
-                }
-
-                case "d" : {
-                    foundationSuit = Suit.DIAMONDS;
-                    break;
-                }
-
-                case "c" : {
-                    foundationSuit = Suit.CLUBS;
-                    break;
-                }
-
-                case "s" : {
-                    foundationSuit = Suit.SPADES;
-                    break;
-                }
-            }
-
-            Card tableauCard = tableau.get(sourceTableauIndex).getLastFaceUpCard();
-
-            // Check suit
-            if (tableauCard.getSuit().equals(foundationSuit)) {
-                Card topCard = foundation.getTopCard(foundationSuit);
-
-                // If foundation is empty only ACE cards can be placed
-                if (topCard == null) {
-                    // Only add if tableau card is an ACE
-                    if (tableauCard.getRank().equals(Rank.ACE)) {
-                        // Add the ace card to foundation
-                        foundation.addCard(foundationSuit, tableauCard);
-                        // Remove the last faceUpCards in tableau
-                        tableau.get(sourceTableauIndex).removeLastFaceUpCard();
-                    } else {
-                        Console.printError("Card is not an ACE card. Cannot add to foundation");
-                    }
-                } else {
-                    if (tableauCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
-                        // Add the faceup card to foundation
-                        foundation.addCard(foundationSuit, tableauCard);
-                        // Remove the all faceUpCards in tableau
-                        tableau.get(sourceTableauIndex).removeLastFaceUpCard();
-                    } else {
-                        Console.printError("Card is not the right rank");
-                    }
-                }
-            } else {
-                Console.printError("Card is not the correct foundation suit");
+                Console.printError("Cannot move card " + sourceCard + " to tableau T" + (destinationIndex + 1));
             }
         }
     }
 
+    private void moveWasteToFoundation(String instruction) {
+        if (!waste.isEmpty()) {
+            Card wasteCard = waste.get(waste.size() - 1);
+            Suit foundationSuit = getFoundationSuit(instruction.charAt(1));
+
+            if (wasteCard.getSuit().equals(foundationSuit)) {
+                Card topCard = foundation.getTopCard(foundationSuit);
+
+                if (topCard == null) {
+                    if (wasteCard.getRank().equals(Rank.ACE)) {
+                        foundation.addCard(foundationSuit, wasteCard);
+                        waste.remove(waste.size() - 1);
+                    } else {
+                        Console.printError("Card is not an ACE card. Cannot add to foundation");
+                    }
+                } else if (wasteCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
+                    foundation.addCard(foundationSuit, wasteCard);
+                    waste.remove(waste.size() - 1);
+                } else {
+                    Console.printError("Card is not the right rank");
+                }
+            } else {
+                Console.printError("Not the correct foundation suit");
+            }
+        } else {
+            Console.printError("Waste is empty");
+        }
+    }
+
+    public void moveTableauToFoundation(String instruction) {
+        Console.printAction("- Moving from Tableau to Foundation");
+
+        int sourceTableauIndex = Character.getNumericValue(instruction.charAt(1)) - 1;
+        Suit foundationSuit = getFoundationSuit(instruction.charAt(2));
+        Card tableauCard = tableau.get(sourceTableauIndex).getLastFaceUpCard();
+
+        if (tableauCard.getSuit().equals(foundationSuit)) {
+            Card topCard = foundation.getTopCard(foundationSuit);
+
+            if (topCard == null) {
+                if (tableauCard.getRank().equals(Rank.ACE)) {
+                    foundation.addCard(foundationSuit, tableauCard);
+                    tableau.get(sourceTableauIndex).removeLastFaceUpCard();
+                } else {
+                    Console.printError("Card is not an ACE card. Cannot add to foundation");
+                }
+            } else if (tableauCard.getRank().getValue() == topCard.getRank().getValue() + 1) {
+                foundation.addCard(foundationSuit, tableauCard);
+                tableau.get(sourceTableauIndex).removeLastFaceUpCard();
+            } else {
+                Console.printError("Card is not the right rank");
+            }
+        } else {
+            Console.printError("Card is not the correct foundation suit");
+        }
+    }
+
+    private Suit getFoundationSuit(char suitChar) {
+        switch (Character.toLowerCase(suitChar)) {
+            case 'h': return Suit.HEARTS;
+            case 'd': return Suit.DIAMONDS;
+            case 'c': return Suit.CLUBS;
+            case 's': return Suit.SPADES;
+            default: throw new IllegalArgumentException("Invalid foundation suit: " + suitChar);
+        }
+    }
+
+
     private boolean isValidTableauMove(Card source, Card target) {
+        // If the tableau is empty, the target card would be null
+        if (target == null) {
+            return true;
+        }
+
         // Is the color same?
         boolean isColorSame = source.getSuit().getColor().equals(target.getSuit().getColor());
 

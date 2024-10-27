@@ -6,9 +6,9 @@ public class GameState {
     private List<Card> stock;
     private List<Card> waste;
     private List<TableauPile> tableau;
-    private FoundationPile foundation;
+    private Foundation foundation;
 
-    public GameState(List<Card> stock, List<Card> waste, List<TableauPile> tableau, FoundationPile foundation) {
+    public GameState(List<Card> stock, List<Card> waste, List<TableauPile> tableau, Foundation foundation) {
         this.stock = stock;
         this.waste = waste;
         this.tableau = tableau;
@@ -27,7 +27,7 @@ public class GameState {
         return tableau;
     }
 
-    public FoundationPile getFoundation() {
+    public Foundation getFoundation() {
         return foundation;
     }
 }

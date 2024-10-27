@@ -3,11 +3,11 @@ package org.ibaqu;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class FoundationPile {
+public class Foundation {
 
     private Map<Suit, Card> foundation;
 
-    public FoundationPile() {
+    public Foundation() {
         foundation = new EnumMap<>(Suit.class);
 
         for (Suit suit : Suit.values()) {

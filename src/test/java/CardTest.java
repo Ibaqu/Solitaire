@@ -1,5 +1,4 @@
 import org.ibaqu.Card;
-import org.ibaqu.Console;
 import org.ibaqu.Rank;
 import org.ibaqu.Suit;
 import org.junit.jupiter.api.Assertions;

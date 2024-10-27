@@ -35,7 +35,7 @@ public class GameRenderer {
     }
 
     // Displays live status of Foundation Piles
-    public void renderFoundationPile(FoundationPile foundation) {
+    public void renderFoundationPile(Foundation foundation) {
 
         for (Suit suit : Suit.values()) {
             Card topCard = foundation.getTopCard(suit);
@@ -50,6 +50,10 @@ public class GameRenderer {
             // Get the tableau pile at the index
             TableauPile tableauPile = tableau.get(i);
             System.out.print("T" + (i + 1) + " : ");
+
+            // Check and flip the last card for the tableau if applicable
+            tableauPile.flipLastCard();
+
             // Display the faceDownCards
             for (Card card : tableauPile.getFaceDownCards()) {
                 System.out.print(card + " ");
