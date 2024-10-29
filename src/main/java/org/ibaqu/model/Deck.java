@@ -26,7 +26,6 @@ public class Deck {
         return cards;
     }
 
-    // TODO : Consider changing the deck to a Hashset to preserve uniqueness and maintaining random order
     private void shuffle() {
         Collections.shuffle(cards);
     }
